@@ -27,21 +27,22 @@ export const useSequencerStore = create<SequencerStore>((set) => ({
     set((state) => ({
       pattern: {
         ...state.pattern,
-        [instrument]: state.pattern[instrument].map((step, i) =>
-          i === stepIndex ? (step === 1 ? 0 : 1) : step
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [instrument]: state.pattern[instrument].map(
+          (step, i) => (i === stepIndex ? (step === 1 ? 0 : 1) : step)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ) as any,
       },
     })),
 
-      setIsPlaying: (isPlaying) => set({ isPlaying }),
-        setCurrentStep: (step) => set({ currentStep: step }),
+  setIsPlaying: (isPlaying) => set({ isPlaying }),
+  setCurrentStep: (step) => set({ currentStep: step }),
 
   setBpm: (bpm) => set({ bpm }),
 
   setMasterVolume: (volume) => set({ masterVolume: volume }),
 
-  clearPattern: () => set({ pattern: createEmptyBeatPattern(), currentStep: 0 }),
+  clearPattern: () =>
+    set({ pattern: createEmptyBeatPattern(), currentStep: 0 }),
 
   loadPattern: (pattern) => set({ pattern }),
 }));
