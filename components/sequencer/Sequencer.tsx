@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Track } from "./Track";
-import { Controls } from "./Controls";
-import { INSTRUMENTS } from "@/lib/contants";
-import { useEffect, useState } from "react";
-import { useAudioEngine } from "@/hooks/useAudioEngine";
+import { Track } from './Track';
+import { Controls } from './Controls';
+import { useAudioEngine } from '@/hooks/useAudioEngine';
+import { useEffect, useState } from 'react';
+import { INSTRUMENTS } from '@/lib/contants';
 
 export function Sequencer() {
   const { initializeAudio } = useAudioEngine();
@@ -12,8 +12,13 @@ export function Sequencer() {
 
   useEffect(() => {
     const init = async () => {
-      await initializeAudio();
-      setAudioReady(true);
+      try {
+        await initializeAudio();
+        setAudioReady(true);
+        console.log('✅ Sequencer audio ready');
+      } catch (error) {
+        console.error('Failed to initialize audio:', error);
+      }
     };
     init();
   }, [initializeAudio]);
@@ -21,21 +26,21 @@ export function Sequencer() {
   return (
     <div className="max-w-7xl mx-auto">
       <h1 className="text-4xl font-bold text-white mb-8">🎵 BeatForge</h1>
-
+      
       {!audioReady && (
         <div className="bg-yellow-900 border border-yellow-600 text-yellow-200 px-4 py-3 rounded mb-4">
           <p className="font-semibold">🔊 Initializing audio engine...</p>
-          <p className="text-sm">Click anywhere to enable audio</p>
+          <p className="text-sm">If audio doesn&apos;t work, try clicking anywhere on the page</p>
         </div>
       )}
-
+      
       <Controls />
 
       <div className="bg-gray-800 rounded-lg p-6">
         <div className="mb-4">
           <div className="flex items-center gap-4 mb-2">
             <div className="w-24"></div>
-
+            
             <div className="flex gap-1">
               {Array.from({ length: 16 }, (_, i) => (
                 <div
@@ -63,16 +68,10 @@ export function Sequencer() {
         <h2 className="text-xl font-bold text-white mb-4">🎹 Quick Start</h2>
         <ul className="text-gray-300 space-y-2">
           <li>• Click on the grid to activate steps</li>
-          <li>
-            • Press <kbd className="bg-gray-700 px-2 py-1 rounded">Play</kbd> to
-            start
-          </li>
+          <li>• Press <kbd className="bg-gray-700 px-2 py-1 rounded">Play</kbd> to start</li>
           <li>• Adjust BPM to change tempo (60-200)</li>
           <li>• Use mute buttons to solo instruments</li>
-          <li>
-            • Press <kbd className="bg-gray-700 px-2 py-1 rounded">Clear</kbd>{" "}
-            to reset
-          </li>
+          <li>• Press <kbd className="bg-gray-700 px-2 py-1 rounded">Clear</kbd> to reset</li>
         </ul>
       </div>
     </div>

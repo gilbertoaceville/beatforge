@@ -69,7 +69,7 @@ export default async function Home() {
                 <div className="mb-4 space-y-1">
                   {Object.entries(beat.pattern).slice(0, 3).map(([instrument, pattern]) => (
                     <div key={instrument} className="flex gap-1">
-                      {pattern.map((step, i) => (
+                      {pattern.map((step: number, i: number) => (
                         <div
                           key={i}
                           className={`h-2 flex-1 rounded ${
