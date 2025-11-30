@@ -1,95 +1,160 @@
-import * as Tone from 'tone';
-import { InstrumentName } from '@/lib/types/sequencer';
+import * as Tone from "tone";
+import { InstrumentName } from "@/lib/types/sequencer";
 
 export class AudioEngine {
-  private synths: Record<InstrumentName, Tone.Sampler | Tone.Synth | Tone.NoiseSynth | Tone.MetalSynth>;
+  private synths: Record<
+    InstrumentName,
+    | Tone.Sampler
+    | Tone.Synth
+    | Tone.MembraneSynth
+    | Tone.NoiseSynth
+    | Tone.MetalSynth
+  > | null = null;
   private isInitialized = false;
 
-  constructor() {
+  constructor() {}
+
+  private createSynths() {
+    if (this.synths) return;
+
     this.synths = {
       kick: new Tone.MembraneSynth({
         pitchDecay: 0.05,
         octaves: 6,
-        oscillator: { type: 'sine' },
-        envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 }
+        envelope: {
+          attack: 0.001,
+          decay: 0.4,
+          sustain: 0.01,
+          release: 1.4,
+        },
       }).toDestination(),
 
       snare: new Tone.NoiseSynth({
-        noise: { type: 'white' },
-        envelope: { attack: 0.001, decay: 0.2, sustain: 0 }
+        noise: { type: "white" },
+        envelope: {
+          attack: 0.001,
+          decay: 0.2,
+          sustain: 0,
+          release: 0.2,
+        },
       }).toDestination(),
 
       hihat: new Tone.MetalSynth({
-        frequency: 200,
-        envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
+        envelope: {
+          attack: 0.001,
+          decay: 0.05,
+          release: 0.01,
+        },
         harmonicity: 5.1,
         modulationIndex: 32,
         resonance: 4000,
-        octaves: 1.5
+        octaves: 1.5,
       }).toDestination(),
 
       bass: new Tone.Synth({
-        oscillator: { type: 'sawtooth' },
-        envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.5 }
+        oscillator: { type: "sawtooth" },
+        envelope: {
+          attack: 0.01,
+          decay: 0.2,
+          sustain: 0.3,
+          release: 0.5,
+        },
       }).toDestination(),
 
       melody: new Tone.Synth({
-        oscillator: { type: 'triangle' },
-        envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+        oscillator: { type: "triangle" },
+        envelope: {
+          attack: 0.005,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 1,
+        },
       }).toDestination(),
     };
   }
 
   async initialize() {
     if (this.isInitialized) return;
-    
+
     await Tone.start();
-    console.log('🎵 Audio engine initialized');
+    console.log("🎵 Audio context started");
+
+    this.createSynths();
+    console.log("🎹 Synths initialized");
+
     this.isInitialized = true;
   }
 
   playInstrument(instrument: InstrumentName, time?: number) {
-    if (!this.isInitialized) {
-      console.warn('Audio engine not initialized');
+    if (!this.isInitialized || !this.synths) {
+      console.warn("Audio engine not initialized");
       return;
     }
 
     const synth = this.synths[instrument];
 
-    switch (instrument) {
-      case 'kick':
-        (synth as Tone.MembraneSynth).triggerAttackRelease('C1', '8n', time);
-        break;
-      case 'snare':
-        (synth as Tone.NoiseSynth).triggerAttackRelease('16n', time);
-        break;
-      case 'hihat':
-        (synth as Tone.MetalSynth).triggerAttackRelease('32n', time as number);
-        break;
-      case 'bass':
-        (synth as Tone.Synth).triggerAttackRelease('C2', '8n', time);
-        break;
-      case 'melody':
-        (synth as Tone.Synth).triggerAttackRelease('C4', '8n', time);
-        break;
+    try {
+      switch (instrument) {
+        case "kick":
+          (synth as Tone.MembraneSynth).triggerAttackRelease("C1", "8n", time);
+          break;
+        case "snare":
+          (synth as Tone.NoiseSynth).triggerAttackRelease("16n", time);
+          break;
+        case "hihat":
+          (synth as Tone.MetalSynth).triggerAttackRelease(
+            "32n",
+            time as number
+          );
+          break;
+        case "bass":
+          (synth as Tone.Synth).triggerAttackRelease("C2", "8n", time);
+          break;
+        case "melody":
+          (synth as Tone.Synth).triggerAttackRelease("C4", "8n", time);
+          break;
+      }
+    } catch (error) {
+      console.error(`Error playing ${instrument}:`, error);
     }
   }
 
   setBPM(bpm: number) {
-    Tone.Transport.bpm.value = bpm;
+    try {
+      const transport = Tone.getTransport();
+      if (transport && transport.bpm) {
+        transport.bpm.value = bpm;
+      }
+    } catch (error) {
+      console.error("Error setting BPM:", error);
+    }
   }
 
   start() {
-    Tone.Transport.start();
+    try {
+      Tone.getTransport().start();
+    } catch (error) {
+      console.error("Error starting transport:", error);
+    }
   }
 
   stop() {
-    Tone.Transport.stop();
+    try {
+      Tone.getTransport().stop();
+    } catch (error) {
+      console.error("Error stopping transport:", error);
+    }
   }
 
   dispose() {
-    Object.values(this.synths).forEach(synth => synth.dispose());
-    Tone.Transport.cancel();
+    try {
+      if (this.synths) {
+        Object.values(this.synths).forEach((synth) => synth.dispose());
+      }
+      Tone.getTransport().cancel();
+    } catch (error) {
+      console.error("Error disposing audio engine:", error);
+    }
   }
 }
 

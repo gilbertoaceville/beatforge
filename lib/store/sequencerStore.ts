@@ -42,7 +42,11 @@ export const useSequencerStore = create<SequencerStore>((set) => ({
   setMasterVolume: (volume) => set({ masterVolume: volume }),
 
   clearPattern: () =>
-    set({ pattern: createEmptyBeatPattern(), currentStep: 0 }),
+    set({
+      pattern: createEmptyBeatPattern(),
+      currentStep: 0,
+      isPlaying: false,
+    }),
 
   loadPattern: (pattern) => set({ pattern }),
 }));
