@@ -29,3 +29,33 @@ export interface SequencerState {
   pattern: BeatPattern;
   masterVolume: number;
 }
+
+export interface DbBeat {
+  id: string;
+  title: string;
+  creator: string;
+  bpm: number;
+  pattern: BeatPattern;
+  settings: {
+    masterVolume: number;
+    trackVolumes: Record<InstrumentName, number>;
+  };
+  plays: number;
+  likes: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export function fromDbBeat(dbBeat: DbBeat): Beat {
+  return {
+    id: dbBeat.id,
+    title: dbBeat.title,
+    creator: dbBeat.creator,
+    bpm: dbBeat.bpm,
+    pattern: dbBeat.pattern,
+    settings: dbBeat.settings,
+    plays: dbBeat.plays,
+    likes: dbBeat.likes,
+    createdAt: dbBeat.created_at,
+  };
+}
