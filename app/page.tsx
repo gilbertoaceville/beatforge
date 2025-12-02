@@ -1,6 +1,7 @@
-import Link from 'next/link';
-import { getFeaturedBeats } from '@/lib/data/beats';
-import { Music, Play, Heart, TrendingUp } from 'lucide-react';
+import Link from "next/link";
+import { getFeaturedBeats } from "@/lib/data/beats";
+import { Music, Play, Heart, TrendingUp } from "lucide-react";
+import { ActivityFeed } from "@/components/realtime/ActivityFeed";
 
 export default async function Home() {
   const featuredBeats = await getFeaturedBeats(6);
@@ -9,9 +10,7 @@ export default async function Home() {
     <main className="min-h-screen bg-gray-900">
       <section className="bg-gradient-to-b from-indigo-900 to-gray-900 py-20 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-6xl font-bold text-white mb-6">
-            🎵 BeatForge
-          </h1>
+          <h1 className="text-6xl font-bold text-white mb-6">🎵 BeatForge</h1>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Create, share, and discover amazing beats. The online drum machine
             with global patterns and real-time collaboration.
@@ -32,6 +31,12 @@ export default async function Home() {
               Explore Beats
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className="py-8 px-4 bg-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <ActivityFeed />
         </div>
       </section>
 
@@ -67,18 +72,20 @@ export default async function Home() {
                 </div>
 
                 <div className="mb-4 space-y-1">
-                  {Object.entries(beat.pattern).slice(0, 3).map(([instrument, pattern]) => (
-                    <div key={instrument} className="flex gap-1">
-                      {pattern.map((step: number, i: number) => (
-                        <div
-                          key={i}
-                          className={`h-2 flex-1 rounded ${
-                            step === 1 ? 'bg-indigo-500' : 'bg-gray-700'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  ))}
+                  {Object.entries(beat.pattern)
+                    .slice(0, 3)
+                    .map(([instrument, pattern]) => (
+                      <div key={instrument} className="flex gap-1">
+                        {(pattern as number[]).map((step, i) => (
+                          <div
+                            key={i}
+                            className={`h-2 flex-1 rounded ${
+                              step === 1 ? "bg-indigo-500" : "bg-gray-700"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    ))}
                 </div>
 
                 <div className="flex items-center gap-4 text-sm text-gray-400">
@@ -107,9 +114,7 @@ export default async function Home() {
               <div className="bg-indigo-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Music size={32} className="text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">
-                Easy to Use
-              </h3>
+              <h3 className="text-xl font-bold text-white mb-2">Easy to Use</h3>
               <p className="text-gray-400">
                 Intuitive 16-step sequencer with real-time audio playback
               </p>
