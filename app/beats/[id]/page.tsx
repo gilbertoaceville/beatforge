@@ -1,23 +1,16 @@
-import { getBeatById, getAllBeats } from "@/lib/data/beats";
+import { getBeatById } from "@/lib/data/beats";
 import { notFound } from "next/navigation";
 import BeatPlayer from "@/components/beats/BeatPlayer";
 import { Play, Heart, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
-
-export async function generateStaticParams() {
-  const beats = await getAllBeats();
-  return beats.map((beat) => ({
-    id: beat.id,
-  }));
-}
 
 export default async function BeatDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const resolvedParams = await params;
-  const beat = await getBeatById(resolvedParams.id);
+  const { id } = await params;
+  const beat = await getBeatById(id);
 
   if (!beat) {
     notFound();
