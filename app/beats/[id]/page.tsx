@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import BeatPlayer from "@/components/beats/BeatPlayer";
 import { Play, Heart, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
+import BackLink from "@/components/ui/BackLink";
 
 export default async function BeatDetailPage({
   params,
@@ -19,12 +20,11 @@ export default async function BeatDetailPage({
   return (
     <main className="min-h-screen bg-gray-900 py-8 px-4">
       <div className="max-w-5xl mx-auto">
-        <Link
-          href="/"
-          className="text-indigo-400 hover:text-indigo-300 mb-6 inline-block"
-        >
-          ← Back to Home
-        </Link>
+        <BackLink
+          title="← Back to Home"
+          link="/"
+          className="mb-6 inline-block"
+        />
 
         <div className="bg-gray-800 rounded-lg p-8 mb-6">
           <div className="flex items-start justify-between mb-6">

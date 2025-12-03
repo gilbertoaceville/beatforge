@@ -1,10 +1,11 @@
-import { getAllBeats } from '@/lib/data/beats';
-import Link from 'next/link';
-import { Play, Heart } from 'lucide-react';
+import { getAllBeats } from "@/lib/data/beats";
+import Link from "next/link";
+import { Play, Heart } from "lucide-react";
+import BackLink from "@/components/ui/BackLink";
 
 export const metadata = {
-  title: 'All Beats | BeatForge',
-  description: 'Explore all beats created by the BeatForge community',
+  title: "All Beats | BeatForge",
+  description: "Explore all beats created by the BeatForge community",
 };
 
 export default async function BeatsPage() {
@@ -13,12 +14,11 @@ export default async function BeatsPage() {
   return (
     <main className="min-h-screen bg-gray-900 py-8 px-4">
       <div className="max-w-6xl mx-auto">
-        <Link
-          href="/"
-          className="text-indigo-400 hover:text-indigo-300 mb-6 inline-block"
-        >
-          ← Back to Home
-        </Link>
+        <BackLink
+          title="← Back to Home"
+          link="/"
+          className="mb-6 inline-block"
+        />
 
         <h1 className="text-4xl font-bold text-white mb-8">All Beats</h1>
 
@@ -42,18 +42,20 @@ export default async function BeatsPage() {
               </div>
 
               <div className="mb-4 space-y-1">
-                {Object.entries(beat.pattern).slice(0, 3).map(([instrument, pattern]) => (
-                  <div key={instrument} className="flex gap-1">
-                    {pattern.map((step: number, i: number) => (
-                      <div
-                        key={i}
-                        className={`h-2 flex-1 rounded ${
-                          step === 1 ? 'bg-indigo-500' : 'bg-gray-700'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                ))}
+                {Object.entries(beat.pattern)
+                  .slice(0, 3)
+                  .map(([instrument, pattern]) => (
+                    <div key={instrument} className="flex gap-1">
+                      {pattern.map((step: number, i: number) => (
+                        <div
+                          key={i}
+                          className={`h-2 flex-1 rounded ${
+                            step === 1 ? "bg-indigo-500" : "bg-gray-700"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  ))}
               </div>
 
               <div className="flex items-center gap-4 text-sm text-gray-400">
